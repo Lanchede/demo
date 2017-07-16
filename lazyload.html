@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>知乎图片滚动加载及模糊效果</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        img {
+            width: 200px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <img src="https://i.loli.net/2017/07/16/596afb29799c0.jpg" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="https://i.loli.net/2017/07/16/596afb29799c0.jpg" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="https://i.loli.net/2017/07/16/596afb29799c0.jpg" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="https://i.loli.net/2017/07/16/596afb29799c0.jpg" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="https://i.loli.net/2017/07/16/596afb29799c0.jpg" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="https://i.loli.net/2017/07/16/596afb29799c0.jpg" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="https://i.loli.net/2017/07/16/596afb29799c0.jpg" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="https://i.loli.net/2017/07/16/596afb29799c0.jpg" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="https://i.loli.net/2017/07/16/596afb29799c0.jpg" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+
+<script>
+    var n = 0;
+    var lazyLoad = {
+        isLoad(img) {
+            var h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight || 0,
+                s = window.pageXOffset || document.body.scrollTop || document.documentElement.scrollTop || 0;
+            h = h + s;
+            var t = img.offsetTop;
+                p = img.offsetParent;
+            while (p !== null) {
+                t += p.offsetTop;
+                p = p.offsetParent;
+            }
+            return h - t;
+        },
+        loadImg(img, isBlur) {
+            for(let i = n; i < img.length; i++) {
+                let isLoad = this.isLoad(img[i]) > 0 ? 1 : 0;
+                if(isLoad && img[i].getAttribute('src') === 'https://i.loli.net/2017/07/16/596afb29799c0.jpg') {
+                    img[i].src = img[i].getAttribute('data-src');
+                    n = i + 1;
+                    if(isBlur) {
+                        this.isBlur(img[i]);
+                    }
+                }
+            }
+        },
+        isBlur(img) {
+            img.style.filter = 'blur(7px)';
+            var blur = 7,
+                t = setInterval(() => {
+                if (blur > 0) {
+                    blur = blur - 1;
+                    img.style.filter = 'blur(' + blur + 'px)';
+                } else {
+                    clearInterval(t);
+                }
+            }, 50)
+        }
+    };
+
+    var img = document.getElementsByTagName('img');
+    window.onload = () => {
+        lazyLoad.loadImg(img, false);
+    };
+    window.onscroll = () => {
+        lazyLoad.loadImg(img, true);
+    };
+
+    // ES6 箭头函数
+    // 箭头函数没有自己的 this 值,它的 this 值是继承自外部作用域
+    // 通过object.method()语法调用的方法使用非箭头函数定义，因为这些函数需要从调用者的作用域中获取一个有意义的this值。
+    // 其它情况全都使用箭头函数。
+    // 如上 isBlur 方法从它的调用者处获取了 this 值, 内部函数 setInterval 是一个箭头函数, 它继承了外部作用域的 this
+
+</script>
+</body>
+</html>
